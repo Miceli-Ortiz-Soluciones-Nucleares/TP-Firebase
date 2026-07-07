@@ -1,0 +1,25 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // PRODUCTOS: lectura pública, escritura solo admin (JWT claim)
+    match /productos/{productoId} {
+      allow read: if true;
+      allow create, update, delete: if request.auth != null
+                                    && request.auth.token.admin == true;
+    }
+
+    // COMPRAS: cualquier cliente puede crear (checkout anónimo)
+    //          solo admin puede leer, actualizar o eliminar
+    match /compras/{compraId} {
+      allow create: if true;
+      allow read, update, delete: if request.auth != null
+                                  && request.auth.token.admin == true;
+    }
+
+    // Denegar todo lo demás por defecto
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

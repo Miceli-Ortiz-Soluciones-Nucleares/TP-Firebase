@@ -1,0 +1,43 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Dev Server (Vite)",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev"],
+      "cwd": "${workspaceFolder}/kultrumm-shop",
+      "console": "integratedTerminal",
+      "skipFiles": ["<node_internals>/**"]
+    },
+    {
+      "name": "Debug en Chrome",
+      "type": "chrome",
+      "request": "launch",
+      "url": "http://localhost:5173",
+      "webRoot": "${workspaceFolder}/kultrumm-shop/src",
+      "sourceMapPathOverrides": {
+        "/@fs/*": "${workspaceFolder}/kultrumm-shop/*"
+      },
+      "preLaunchTask": "Iniciar Vite"
+    },
+    {
+      "name": "Dev + Chrome (completo)",
+      "type": "chrome",
+      "request": "launch",
+      "url": "http://localhost:5173",
+      "webRoot": "${workspaceFolder}/kultrumm-shop/src",
+      "sourceMapPathOverrides": {
+        "/@fs/*": "${workspaceFolder}/kultrumm-shop/*"
+      }
+    }
+  ],
+  "compounds": [
+    {
+      "name": "▶ Kultrumm (dev + debug)",
+      "configurations": ["Dev Server (Vite)", "Debug en Chrome"],
+      "stopAll": true
+    }
+  ]
+}

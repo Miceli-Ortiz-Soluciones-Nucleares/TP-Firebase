@@ -1,50 +1,44 @@
-# [PROJECT_NAME] Constitution
-<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
+# Kultrumm E-Commerce Constitution
 
 ## Core Principles
 
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Library-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
+### I. Spec-First (NON-NEGOTIABLE)
+No feature, button, route or flow is implemented unless explicitly defined in `integrated-spec-v2.md`. Code is the execution of the plan, never the other way around. Any PR introducing unspecified behavior must be rejected.
 
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. CLI Interface -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
+### II. MVC Architecture Adapted to React
+- **View** (`src/components/`): Pure React + Tailwind CSS only. No Firebase calls, no business logic.
+- **Controller** (`src/hooks/`): Custom Hooks encapsulating state and service calls.
+- **Model** (`src/services/`): Stateless JS/TS modules that exclusively interact with Firebase Auth and Firestore.
+Violations of layer boundaries are treated as architectural defects.
 
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
+### III. JWT-Based Role Authorization
+Admin role is transported via Firebase Auth JWT Custom Claims (`{ "admin": true }`). The frontend reads the decoded token via `user.getIdTokenResult()`. Firestore rules validate `request.auth.token.admin == true`. UID hardcoding anywhere in application code is forbidden.
 
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration Testing -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
+### IV. No Firebase Functions (Phase 1)
+All logic runs client-side using Firestore security rules and JWT. This keeps the project locally testable without additional infrastructure.
 
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
+### V. Bauhaus Design System
+UI must follow the Bauhaus aesthetic: geometric grids, 1px borders (`border-neutral-800`), dark palette (`#121212` bg / `#f3f3f3` text), Space Grotesk (sans) + Space Mono (mono) fonts. Red `#dd3b3b` and amber `#ff9d00` accents used sparingly for active states only.
 
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
+### VI. Phase-Gated Delivery
+- **Phase 1 (current)**: Full MVC app with simulated checkout, JWT auth, Firestore CRUD, CI/CD pipeline.
+- **Phase 2 (deferred)**: PayPal Sandbox integration replacing the simulated checkout.
+No Phase 2 code enters the codebase until Phase 1 is 100% functional and deployed.
 
-[SECTION_2_CONTENT]
-<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
+## Technology Stack
+- React 18 + TypeScript 5 + Vite 5
+- Tailwind CSS 3 + lucide-react
+- React Router DOM 6
+- Firebase SDK 10 (Auth + Firestore)
+- Google Fonts: Space Grotesk + Space Mono
 
-## [SECTION_3_NAME]
-<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
-
-[SECTION_3_CONTENT]
-<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
+## Security Requirements
+- Firestore rules defined in `firestore.rules` (see §6 of spec)
+- Products: public read, admin-only write
+- Orders (`/compras`): public create (anonymous checkout), admin-only read/update/delete
+- `.env` never committed; all secrets in GitHub Secrets for CI/CD
 
 ## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
+This constitution supersedes all other practices. Amendments require updating both this file and `integrated-spec-v2.md` with version bump and date. All implementation decisions must be traceable to a User Story in the spec.
 
-[GOVERNANCE_RULES]
-<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
-
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+**Version**: 3.0.0 | **Ratified**: 2026-07-07 | **Last Amended**: 2026-07-07
